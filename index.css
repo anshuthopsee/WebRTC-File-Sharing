@@ -1,0 +1,161 @@
+body {
+    background-color: black;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+p {
+    font-size: 18px;
+    color: white;
+}
+
+#user-id {
+    color: white;
+    width: 100%;
+    height: 60px;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    display: flex;
+    height: 80px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 340px;
+    margin: auto;
+    height: 100%;
+}
+
+.btn-container {
+    width: inherit;
+    height: 400px;
+    display: flex;
+    row-gap: 30px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.btn{
+    height: 60px;
+    width: 180px;
+    font-size: 32px;
+    background-color: black;
+    outline: none;
+    border: 1px solid white;
+    color: white;
+}
+
+.send.btn:hover{
+    border-color: aqua;
+    color: aqua;
+}
+
+.recieve.btn:hover{
+    border-color: #0af54a;
+    color: #0af54a;
+}
+
+button.user:active {
+    border-color: aqua;
+    color: aqua;
+}
+
+.wrapper {
+    display: flex;
+    row-gap: 30px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-input {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    font-size: 18px;
+    color: white;
+}
+
+.users{
+    display: flex;
+    height: 300px;
+    width: 100%;
+    row-gap: 15px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.user {
+    height: 50px;
+    width: 120px;
+    font-size: 20px;
+    background-color: black;
+    outline: none;
+    border: 1px solid white;
+    color: white;
+}
+
+.progress_box {
+    height: 300px;
+    justify-content: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.progress {
+    margin: 0;
+    font-size: 84px;
+    color: white;
+}
+
+.status {
+    margin: 0;
+}
+
+.popup {
+    position: fixed;
+    display: flex;
+    width: 340px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    column-gap: 20px;
+    top: 50%;
+    left: 50%;
+    margin-top: -30px; 
+    margin-left: -190px; 
+    background-color: #1c1c1c;
+    border: 1px solid white;
+}
+
+.message {
+    width: 100%;
+}
+
+.accept, .decline {
+    height: 30px;
+    width: 110px;
+    background-color: black;
+    outline: none;
+    color: white;
+    margin: 0;
+}
+
+.accept {
+    border: 1px solid #0af54a;
+}
+
+.decline {
+    border: 1px solid red;
+}
