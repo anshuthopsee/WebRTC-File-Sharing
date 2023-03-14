@@ -10,4 +10,5 @@ To access the site from another device, which is not your server, find out your 
 let ws = new WebSocket(`ws://${IP_ADDRESS}:8895`);
 ```
 Demo
+
 ![File sharing demo](demo/file_sharing.gif)
