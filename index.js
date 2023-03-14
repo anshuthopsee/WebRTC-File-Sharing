@@ -3,15 +3,10 @@ let dataChannel;
 let recieveChannel;
 let file;
 let userId;
-let clicked = false;
-let ws = new WebSocket("ws://localhost:8895");
+const ws = new WebSocket("ws://localhost:8895");
 
 const userIdElement = document.getElementById("user-id");
 const container = document.querySelector(".container");
-
-ws.onopen = () => {
-    console.log("Message sent to server");
-};
 
 ws.onmessage = (e) => {
     let data = JSON.parse(e.data);
@@ -37,7 +32,6 @@ ws.onmessage = (e) => {
     };
 
     if (data.type === "answer") {
-        console.log("triggered")
         let answer = data.sdp;
         addAnswer(answer);
     };
@@ -58,7 +52,6 @@ ws.onmessage = (e) => {
     }
 
     if (data.type === "accept-request") {
-        console.log("called")
         const popup = document.createElement("div");
         popup.className = "popup";
 
@@ -220,11 +213,8 @@ const servers = {
 
 let createPeerConnection = (targetUserId, sender=false) => {
     peerConnection = new RTCPeerConnection(servers);
-
     peerConnection.addEventListener("icecandidate", (e) => {
-        console.log("recieveing")
         if (e.candidate) {
-            console.log('New ICE candidate:', e.candidate);
             ws.send(JSON.stringify({
                 type: "new-ice-candidate",
                 target: targetUserId,
@@ -240,7 +230,6 @@ let createPeerConnection = (targetUserId, sender=false) => {
     peerConnection.addEventListener("datachannel", (e) => {
         const progress = document.querySelector(".progress");
         recieveChannel = e.channel;
-        console.log("trying")
 
         recieveChannel.addEventListener("error", (err) => { 
             console.log("Error:", err); 
@@ -258,22 +247,26 @@ let createPeerConnection = (targetUserId, sender=false) => {
                 dataArray = [];
                 
             } else {
-                dataArray.push(e.data);
-                recievedSize+=e.data.byteLength
+                console.log("chunks-received")
+                dataArray.push(data);
+                let chunkSize;
+                if (data.byteLength) {
+                    chunkSize = data.byteLength;
+                } else {
+                    chunkSize = data.size;
+                };
+                recievedSize+=chunkSize;
                 progress.textContent = Math.ceil((recievedSize/(fileSize/100)))+"%";
             };
         });  
     });
 };
 
-const calcProgress = (fileSize, len, byteLength) => {
-    return Math.floor((byteLength*len)/fileSize);
-};
-
 const createOffer = async (targetUserId) => {
     createPeerConnection(targetUserId, true);
 
     let offer = await peerConnection.createOffer();
+    console.log("created-offer");
     await peerConnection.setLocalDescription(offer);
     ws.send(JSON.stringify({
         name: userId, 
@@ -281,15 +274,14 @@ const createOffer = async (targetUserId) => {
         type: "offer",
         sdp: offer
     }));
-
-    console.log('Offer:', offer);
 };
 
-let createAnswer = async (targetUserId, offer) => {
+const createAnswer = async (targetUserId, offer) => {
     createPeerConnection(targetUserId);
     await peerConnection.setRemoteDescription(offer);
 
     let answer = await peerConnection.createAnswer();
+    console.log("created-answer");
     await peerConnection.setLocalDescription(answer);
     ws.send(JSON.stringify({
         name: userId, 
@@ -299,18 +291,19 @@ let createAnswer = async (targetUserId, offer) => {
     }));
 };
 
-let addAnswer = async (answer) => {
-    console.log("success")
+const addAnswer = async (answer) => {
     if (!peerConnection.currentRemoteDescription) {
-        peerConnection.setRemoteDescription(answer);
+        await peerConnection.setRemoteDescription(answer);
+        console.log("accepted-answer");
     };
 };
 
-let addIceCandidates = async (candidate) => {
+const addIceCandidates = (candidate) => {
     peerConnection.addIceCandidate(candidate);
+    console.log("counterpart's-ice-candidates-added");
 };
 
-let openDataChannel = () => { 
+const openDataChannel = () => { 
     let options = { 
        reliable: true 
     }; 
@@ -325,12 +318,12 @@ let openDataChannel = () => {
     
         let sentSize = 0;
         const send = () => {
-            console.log("running")
             if (!buffer.byteLength) {
                 dataChannel.send('done');
                 return;
             };
 
+            console.log("chunks-transfered");
             const chunk = buffer.slice(0, chunkSize);
             buffer = buffer.slice(chunkSize, buffer.byteLength);
             dataChannel.send(chunk);
@@ -347,7 +340,6 @@ let openDataChannel = () => {
         });
     });
 };
-
 
 const downloadFile = (blob, fileName) => {
     const a = document.createElement('a');
