@@ -10,4 +10,4 @@ To access the site from another device, which is not your server, find out your 
 let ws = new WebSocket(`ws://${IP_ADDRESS}:8895`);
 ```
 Demo
-![File sharing demo](screen_record.mp4)  
+![File sharing demo](demo/screen_record.mp4)
