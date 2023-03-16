@@ -53,14 +53,6 @@ wsServer.on("request", (req) => {
     
     connection.on("message", (msg) => {
         let data = JSON.parse(msg.utf8Data);
-        if (data.type === "join") {
-            Object.keys(connections).map((id) => {
-                if (id !== userId) connections[id].send(JSON.stringify({
-                    type: "join",
-                    userId: userId
-                }));
-            });
-        };
 
         if (data.type === "sender") {
             senders.push(data.userId);
