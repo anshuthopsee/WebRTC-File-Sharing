@@ -18,3 +18,7 @@ const ws = new WebSocket(`ws://${IP_ADDRESS}:8895`);
 ```
 npm i websocket
 ```
+## References
+- https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
+- https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Signaling_and_video_calling
+- https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels
