@@ -314,29 +314,30 @@ const openDataChannel = () => {
     dataChannel.addEventListener("open", () => {
         const status = document.querySelector(".status");
         file.arrayBuffer().then(buffer => {
-        const chunkSize = 16 * 1024;
-    
-        let sentSize = 0;
-        const send = () => {
-            if (!buffer.byteLength) {
-                dataChannel.send('done');
-                return;
+            const chunkSize = 16 * 1024;
+            let sentSize = 0;
+
+            const send = () => {
+                if (!buffer.byteLength) {
+                    dataChannel.send('done');
+                    return;
+                };
+                
+                console.log("chunks-transfered");
+                const chunk = buffer.slice(0, chunkSize);
+                buffer = buffer.slice(chunkSize, buffer.byteLength);
+                dataChannel.send(chunk);
+                sentSize+=chunk.byteLength;
+                status.textContent = `File transfer progress: ${Math.ceil(sentSize/(file.size/100))}%`;
+
+                if (dataChannel.bufferedAmount > dataChannel.bufferedAmountLowThreshold) {
+                    dataChannel.onbufferedamountlow = () => {
+                        dataChannel.onbufferedamountlow = null;
+                        send();
+                    };
+                };
             };
-
-            console.log("chunks-transfered");
-            const chunk = buffer.slice(0, chunkSize);
-            buffer = buffer.slice(chunkSize, buffer.byteLength);
-            dataChannel.send(chunk);
-            sentSize+=chunk.byteLength
-
-            status.textContent = `File transfer progress: ${Math.ceil(sentSize/(file.size/100))}%`
-
-            setTimeout(() => {
-                send();
-            }, 50);
-        };
-
-        send();
+            send();
         });
     });
 };
@@ -348,5 +349,5 @@ const downloadFile = (blob, fileName) => {
     a.download = fileName;
     a.click();
     window.URL.revokeObjectURL(url);
-    a.remove()
+    a.remove();
 };
