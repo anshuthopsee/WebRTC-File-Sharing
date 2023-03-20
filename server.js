@@ -4,6 +4,9 @@ import * as path from 'path';
 import WebSocket from "websocket";
 let __dirname = path.resolve();
 
+let MAIN_SERVER_PORT = 6888;
+let WEBSOCKET_SERVER_PORT = 8895;
+
 let connections = {};
 let senders = [];
 let recievers = [];
@@ -24,18 +27,18 @@ const server = http.createServer((req, res) => {
     };
 
     if (req.url === "/") getFile("index.html");
-    if (req.url === "/index.js") getFile("index.js");
+    if (req.url === "/index.js") {res.setHeader("Content-Type", "application/javascript"); getFile("index.js")};
     if (req.url === "/index.css") getFile("index.css");
 });
 
 let WebSocketServer = WebSocket.server;
 
-const websocketServer = http.createServer((req, res) => {
+const webSocketServer = http.createServer((req, res) => {
     res.writeHead(200)
-}).listen(8895, () => console.log("Listening on", 8895));
+}).listen(WEBSOCKET_SERVER_PORT, () => console.log("WebSocket server listening on", WEBSOCKET_SERVER_PORT));
 
 const wsServer = new WebSocketServer({
-    "httpServer": websocketServer
+    "httpServer": webSocketServer
 });
 
 wsServer.on("request", (req) => {
@@ -106,4 +109,4 @@ const assignUserId = () => {
     return userId;
 };
 
-server.listen(6888, () => console.log("Listening on 6888"));
+server.listen(MAIN_SERVER_PORT, () => console.log("Main server listening on", MAIN_SERVER_PORT));
