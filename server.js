@@ -15,7 +15,8 @@ let recievers = [];
 const server = http.createServer((req, res) => {
     if (Object.keys(connections).length > 5) res.end("Max users reached!")
     const getFile = (name) => {
-        fs.readFile(__dirname + `\\${name}`, (err, data) => {
+        const filePath = path.join(__dirname, name);
+        fs.readFile(filePath, (err, data) => {
             if (err) {
                 res.writeHead(404);
                 res.end(JSON.stringify(err));
